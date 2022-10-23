@@ -1,24 +1,17 @@
-import requests
 import discord
+import asyncio
 from discord.ext import commands
 
-from func import get_token, get_api_key
+from func import get_token
 
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
+discord.utils.setup_logging() #Starts logging
 
-@bot.command()
-async def hello(ctx):
-    await ctx.send('Hi there!')
+async def main():
+    async with bot:
+        await bot.load_extension('commands')
+        await bot.start(get_token())
 
-@bot.command()
-async def gif(ctx):
-    result = requests.get("https://api.giphy.com/v1/gifs/random", params={"api_key": get_api_key()}).json()
-    await ctx.send(result["data"]["url"])
-    
-@bot.command()
-async def FreeNitro(ctx):
-    await ctx.send('https://media.tenor.com/pO54yeWaIJUAAAAd/nitro-rick-roll.gif')
-      
-bot.run(get_token())
+asyncio.run(main())
